@@ -1,0 +1,6 @@
+[submodule "crud-back"]
+	path = crud-back
+	url = https://github.com/kkoto-official/crud-back.git
+[submodule "crud-front"]
+	path = crud-front
+	url = https://github.com/kkoto-official/crud-front.git
