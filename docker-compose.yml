@@ -1,0 +1,63 @@
+services:
+  # dbサービスを削除またはコメントアウト
+  # db:
+  #   image: postgres:16
+  #   container_name: crud-db
+  #   environment:
+  #     POSTGRES_DB: crud
+  #     POSTGRES_USER: kai
+  #     POSTGRES_PASSWORD: pos1467
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - crud_pg_data:/var/lib/postgresql/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U kai -d crud"]
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 10
+  #   profiles: ["backend", "full"]
+
+  backend:
+    build:
+      context: ./crud-back
+      dockerfile: Dockerfile
+    container_name: crud-backend
+    environment:
+      DB_HOST: host.docker.internal  # Windows上のPostgreSQLに接続
+      DB_PORT: 5432
+      DB_NAME: crud
+      DB_USER: kai
+      DB_PASS: pos1467
+      FRONTEND_ORIGINS: http://localhost:3000,http://localhost:3002
+      APP_PORT: 3001
+    # depends_onを削除（外部DBなので不要）
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
+    ports:
+      - "3001:3001"
+    command: >
+      sh -c "npm run mig:run && npm run start:dev"
+    volumes:
+      - ./crud-back:/app
+      - /app/node_modules
+    profiles: ["backend", "full"]
+
+  frontend:
+    build:
+      context: ./crud-front
+      dockerfile: Dockerfile
+    container_name: crud-frontend
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    volumes:
+      - ./crud-front:/app
+      - /app/node_modules
+    profiles: ["frontend", "full"]
+
+volumes:
+  crud_pg_data:  # 使用しない場合は削除可能
