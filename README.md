@@ -15,6 +15,17 @@ git clone --recurse-submodules https://github.com/kkoto-official/crud.git
 `./crud-front/.env.local`を編集する<br>
 主にバックにアクセスするIPアドレスを編集する
 
+## 起動
+### バックエンド
+``` cmd
+docker compose up --build backend
+```
+
+### フロントエンド
+``` cmd
+docker compose up --build frontend
+```
+
 ## 更新作業
 ``` cmd
 git pull --recurse-submodules
